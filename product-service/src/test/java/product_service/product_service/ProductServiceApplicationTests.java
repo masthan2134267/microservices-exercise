@@ -1,4 +1,4 @@
-package prodcut_service.product_service;
+package product_service.product_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
