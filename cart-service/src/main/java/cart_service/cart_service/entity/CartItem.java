@@ -1,12 +1,10 @@
 package cart_service.cart_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "cart_item")
 @Data
 public class CartItem {
 
@@ -14,7 +12,11 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "cart_id")
     private Integer cartId;
+
+    @Column(name = "product_id")
     private Integer productId;
+
     private Integer quantity;
 }

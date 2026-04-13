@@ -1,22 +1,19 @@
 package product_service.product_service.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import product_service.product_service.entity.Product;
 import product_service.product_service.repository.ProductRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
-
-    public Product createProduct(Product product) {
+    public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
 
@@ -25,20 +22,25 @@ public class ProductService {
     }
 
     public Product getProductById(Integer id) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
-        return optionalProduct.orElse(null);
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
     }
 
-    public boolean validateStock(Integer productId, Integer quantity) {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        if (optionalProduct.isPresent()) {
-            Product product = optionalProduct.get();
-            return product.getStock() >= quantity;
-        }
-        return false;
+    public Product updateProduct(Integer id, Product product) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+
+        existingProduct.setName(product.getName());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setStock(product.getStock());
+
+        return productRepository.save(existingProduct);
     }
 
     public void deleteProduct(Integer id) {
-        productRepository.deleteById(id);
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+
+        productRepository.delete(existingProduct);
     }
 }

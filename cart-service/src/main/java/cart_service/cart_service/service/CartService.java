@@ -2,21 +2,18 @@ package cart_service.cart_service.service;
 
 import cart_service.cart_service.entity.Cart;
 import cart_service.cart_service.repository.CartRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
 
     private final CartRepository cartRepository;
 
-    public CartService(CartRepository cartRepository) {
-        this.cartRepository = cartRepository;
-    }
-
-    public Cart createCart(Cart cart) {
+    public Cart saveCart(Cart cart) {
         return cartRepository.save(cart);
     }
 
@@ -25,11 +22,23 @@ public class CartService {
     }
 
     public Cart getCartById(Integer id) {
-        Optional<Cart> optionalCart = cartRepository.findById(id);
-        return optionalCart.orElse(null);
+        return cartRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cart not found with id: " + id));
+    }
+
+    public Cart updateCart(Integer id, Cart cart) {
+        Cart existingCart = cartRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cart not found with id: " + id));
+
+        existingCart.setUserId(cart.getUserId());
+
+        return cartRepository.save(existingCart);
     }
 
     public void deleteCart(Integer id) {
-        cartRepository.deleteById(id);
+        Cart existingCart = cartRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cart not found with id: " + id));
+
+        cartRepository.delete(existingCart);
     }
 }
