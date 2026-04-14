@@ -1,6 +1,10 @@
 package product_service.product_service.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import product_service.product_service.entity.Product;
 import product_service.product_service.repository.ProductRepository;
@@ -27,20 +31,36 @@ public class ProductService {
     }
 
     public Product updateProduct(Integer id, Product product) {
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
-
+        Product existingProduct = getProductById(id);
         existingProduct.setName(product.getName());
         existingProduct.setPrice(product.getPrice());
         existingProduct.setStock(product.getStock());
-
         return productRepository.save(existingProduct);
     }
 
     public void deleteProduct(Integer id) {
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+        productRepository.deleteById(id);
+    }
 
-        productRepository.delete(existingProduct);
+    // 1F Pagination + Sorting
+    public Page<Product> getAllProductsPaged(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return productRepository.findAll(pageable);
+    }
+
+    // 1F Java Streams - Filtering
+    public List<Product> getProductsByMinPrice(Double minPrice) {
+        return productRepository.findAll()
+                .stream()
+                .filter(product -> product.getPrice() >= minPrice)
+                .toList();
+    }
+
+    // 1F Java Streams - Transformation
+    public List<String> getAllProductNames() {
+        return productRepository.findAll()
+                .stream()
+                .map(Product::getName)
+                .toList();
     }
 }
