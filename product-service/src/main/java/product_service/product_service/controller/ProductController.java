@@ -1,7 +1,6 @@
 package product_service.product_service.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import product_service.product_service.entity.Product;
@@ -22,19 +21,9 @@ public class ProductController {
         return ResponseEntity.ok(savedProduct);
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> products = productService.getAllProducts();
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<Product>> getAllProductsPaged(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
-
-        Page<Product> products = productService.getAllProductsPaged(page, size, sortBy);
         return ResponseEntity.ok(products);
     }
 
@@ -56,15 +45,9 @@ public class ProductController {
         return ResponseEntity.ok("Product deleted successfully");
     }
 
-    // Java Streams - Filtering
-    @GetMapping("/filter")
-    public ResponseEntity<List<Product>> getProductsByMinPrice(@RequestParam Double minPrice) {
-        return ResponseEntity.ok(productService.getProductsByMinPrice(minPrice));
-    }
-
-    // Java Streams - Transformation
-    @GetMapping("/names")
-    public ResponseEntity<List<String>> getAllProductNames() {
-        return ResponseEntity.ok(productService.getAllProductNames());
+    @GetMapping("/price-above/{price}")
+    public ResponseEntity<List<Product>> getProductsAbovePrice(@PathVariable Double price) {
+        List<Product> products = productService.getProductsAbovePrice(price);
+        return ResponseEntity.ok(products);
     }
 }
