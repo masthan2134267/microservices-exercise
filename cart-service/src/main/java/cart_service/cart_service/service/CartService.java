@@ -3,8 +3,10 @@ package cart_service.cart_service.service;
 import cart_service.cart_service.dto.ProductDto;
 import cart_service.cart_service.entity.Cart;
 import cart_service.cart_service.entity.CartItem;
+import cart_service.cart_service.event.CartEvent;
 import cart_service.cart_service.exception.InsufficientStockException;
 import cart_service.cart_service.exception.ResourceNotFoundException;
+import cart_service.cart_service.kafka.KafkaProducerService;
 import cart_service.cart_service.repository.CartItemRepository;
 import cart_service.cart_service.repository.CartRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final WebClient productWebClient;
+    private final KafkaProducerService kafkaProducerService;
 
     public Cart createCart(Cart cart) {
         return cartRepository.save(cart);
@@ -46,7 +49,17 @@ public class CartService {
         item.setProductId(productId);
         item.setQuantity(quantity);
 
-        return cartItemRepository.save(item);
+        CartItem savedItem = cartItemRepository.save(item);
+
+        CartEvent cartEvent = new CartEvent(
+                savedItem.getCartId(),
+                savedItem.getProductId(),
+                savedItem.getQuantity()
+        );
+
+        kafkaProducerService.sendCartEvent(cartEvent);
+
+        return savedItem;
     }
 
     private ProductDto fetchProduct(Integer productId) {
