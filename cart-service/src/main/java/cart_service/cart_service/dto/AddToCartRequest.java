@@ -5,11 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class AddToCartRequest {
-
-    private Integer cartId;
-    private Integer productId;
-    private Integer quantity;
+    private Long productId;
+    private int quantity;
 }

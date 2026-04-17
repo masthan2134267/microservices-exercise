@@ -22,32 +22,24 @@ public class CartItemService {
         return cartItemRepository.findAll();
     }
 
-    public Optional<CartItem> getCartItemById(Integer id) {
+    public Optional<CartItem> getCartItemById(Long id) {
         return cartItemRepository.findById(id);
     }
 
-    public CartItem updateCartItem(Integer id, CartItem updatedCartItem) {
-        Optional<CartItem> existingCartItemOptional = cartItemRepository.findById(id);
-
-        if (existingCartItemOptional.isPresent()) {
-            CartItem existingCartItem = existingCartItemOptional.get();
+    public CartItem updateCartItem(Long id, CartItem updatedCartItem) {
+        return cartItemRepository.findById(id).map(existingCartItem -> {
             existingCartItem.setCartId(updatedCartItem.getCartId());
             existingCartItem.setProductId(updatedCartItem.getProductId());
             existingCartItem.setQuantity(updatedCartItem.getQuantity());
             return cartItemRepository.save(existingCartItem);
-        }
-
-        return null;
+        }).orElse(null);
     }
 
-    public boolean deleteCartItem(Integer id) {
-        Optional<CartItem> existingCartItem = cartItemRepository.findById(id);
-
-        if (existingCartItem.isPresent()) {
-            cartItemRepository.deleteById(id);
-            return true;
+    public boolean deleteCartItem(Long id) {
+        if (!cartItemRepository.existsById(id)) {
+            return false;
         }
-
-        return false;
+        cartItemRepository.deleteById(id);
+        return true;
     }
 }

@@ -1,12 +1,12 @@
-package cart_service.cart_service.event;
+package product_service.product_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class CartEvent {
     private Long cartId;
     private Long productId;

@@ -27,14 +27,14 @@ public class CartItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CartItem> getCartItemById(@PathVariable Integer id) {
+    public ResponseEntity<CartItem> getCartItemById(@PathVariable Long id) {
         return cartItemService.getCartItemById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CartItem> updateCartItem(@PathVariable Integer id,
+    public ResponseEntity<CartItem> updateCartItem(@PathVariable Long id,
                                                    @RequestBody CartItem updatedCartItem) {
         CartItem cartItem = cartItemService.updateCartItem(id, updatedCartItem);
         if (cartItem == null) {
@@ -44,7 +44,7 @@ public class CartItemController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCartItem(@PathVariable Integer id) {
+    public ResponseEntity<String> deleteCartItem(@PathVariable Long id) {
         boolean deleted = cartItemService.deleteCartItem(id);
         if (!deleted) {
             return ResponseEntity.notFound().build();
