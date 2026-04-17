@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddToCartRequest {
-    private Long cartId;
-    private Integer productId;
-    private Integer quantity;
+public class ProductResponse {
+    private Integer id;
+    private String name;
+    private Double price;
+    private Integer stock;
 }

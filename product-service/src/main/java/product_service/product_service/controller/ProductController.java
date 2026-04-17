@@ -1,13 +1,14 @@
 package product_service.product_service.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import product_service.product_service.entity.Product;
 import product_service.product_service.service.ProductService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -28,33 +29,6 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/paged")
-    public ResponseEntity<Page<Product>> getProductsWithPagination(
-            @RequestParam int page,
-            @RequestParam int size,
-            @RequestParam String sortBy) {
-        Page<Product> products = productService.getProductsWithPagination(page, size, sortBy);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<Product>> getProductsByMinPrice(@RequestParam Double minPrice) {
-        List<Product> products = productService.getProductsByMinPrice(minPrice);
-        return ResponseEntity.ok(products);
-    }
-
-    @GetMapping("/names")
-    public ResponseEntity<List<String>> getProductNames() {
-        List<String> productNames = productService.getProductNames();
-        return ResponseEntity.ok(productNames);
-    }
-
-    @GetMapping("/price-above/{price}")
-    public ResponseEntity<List<Product>> getProductsAbovePrice(@PathVariable Double price) {
-        List<Product> products = productService.getProductsAbovePrice(price);
-        return ResponseEntity.ok(products);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Integer id) {
         Product product = productService.getProductById(id);
@@ -71,5 +45,18 @@ public class ProductController {
     public ResponseEntity<String> deleteProduct(@PathVariable Integer id) {
         productService.deleteProduct(id);
         return ResponseEntity.ok("Product deleted successfully");
+    }
+
+    @GetMapping("/{id}/stock/check")
+    public ResponseEntity<Map<String, Object>> checkStock(@PathVariable Integer id,
+                                                          @RequestParam Integer quantity) {
+        boolean available = productService.hasStock(id, quantity);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("productId", id);
+        response.put("requestedQuantity", quantity);
+        response.put("available", available);
+
+        return ResponseEntity.ok(response);
     }
 }
