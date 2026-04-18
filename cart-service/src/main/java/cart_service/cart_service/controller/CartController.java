@@ -4,6 +4,7 @@ import cart_service.cart_service.dto.AddToCartRequest;
 import cart_service.cart_service.entity.Cart;
 import cart_service.cart_service.entity.CartItem;
 import cart_service.cart_service.service.CartService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CartItem> addProductToCart(@RequestBody AddToCartRequest request) {
+    public ResponseEntity<CartItem> addProductToCart(@Valid @RequestBody AddToCartRequest request) {
         return ResponseEntity.ok(cartService.addProductToCart(request));
     }
 }
