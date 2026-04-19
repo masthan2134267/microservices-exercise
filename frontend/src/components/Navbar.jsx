@@ -6,6 +6,11 @@ function Navbar() {
       <Link to="/" style={{ marginRight: '16px' }}>
         Products
       </Link>
+
+      <Link to="/add-product" style={{ marginRight: '16px' }}>
+        Add Product
+      </Link>
+
       <Link to="/cart">
         Cart
       </Link>
