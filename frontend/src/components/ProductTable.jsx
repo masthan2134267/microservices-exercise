@@ -1,10 +1,8 @@
-function ProductTable({ products }) {
-  if (!products || products.length === 0) {
-    return <p>No products available.</p>;
-  }
+import React from "react";
 
+const ProductTable = ({ products }) => {
   return (
-    <table border="1" cellPadding="10" cellSpacing="0" style={{ marginTop: '16px', width: '100%' }}>
+    <table border="1" cellPadding="10" cellSpacing="0" width="100%">
       <thead>
         <tr>
           <th>ID</th>
@@ -14,17 +12,23 @@ function ProductTable({ products }) {
         </tr>
       </thead>
       <tbody>
-        {products.map((product) => (
-          <tr key={product.id}>
-            <td>{product.id}</td>
-            <td>{product.name}</td>
-            <td>{product.price}</td>
-            <td>{product.stock}</td>
+        {products && products.length > 0 ? (
+          products.map((product) => (
+            <tr key={product.id}>
+              <td>{product.id}</td>
+              <td>{product.name}</td>
+              <td>{product.price}</td>
+              <td>{product.stock}</td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="4">No products found</td>
           </tr>
-        ))}
+        )}
       </tbody>
     </table>
   );
-}
+};
 
 export default ProductTable;

@@ -1,19 +1,13 @@
-import axios from 'axios';
-import { PRODUCT_SERVICE_BASE_URL } from '../utils/constants';
+import axios from "axios";
 
-const productClient = axios.create({
-  baseURL: PRODUCT_SERVICE_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-});
+const BASE_URL = "http://localhost:8081/products";
 
 export const getAllProductsApi = async () => {
-  const response = await productClient.get('/products');
+  const response = await axios.get(BASE_URL);
   return response.data;
 };
 
 export const createProductApi = async (productData) => {
-  const response = await productClient.post('/products', productData);
+  const response = await axios.post(BASE_URL, productData);
   return response.data;
 };

@@ -1,4 +1,4 @@
-package product_service.product_service.dto;
+package product_service.product_service.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,20 +1,15 @@
-import { Routes, Route } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import AddProductPage from '../pages/AddProductPage';
-import CartPage from '../pages/CartPage';
-import ProductPage from '../pages/ProductPage';
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import ProductPage from "../pages/ProductPage";
+import AddProductPage from "../pages/AddProductPage";
 
-function AppRoutes() {
+const AppRoutes = () => {
   return (
-    <>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<ProductPage />} />
-        <Route path="/add-product" element={<AddProductPage />} />
-        <Route path="/cart" element={<CartPage />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={<ProductPage />} />
+      <Route path="/add-product" element={<AddProductPage />} />
+    </Routes>
   );
-}
+};
 
 export default AppRoutes;

@@ -3,6 +3,7 @@ package product_service.product_service.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import product_service.product_service.entity.Product;
+import product_service.product_service.exception.ProductNotFoundException;
 import product_service.product_service.repository.ProductRepository;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class ProductService {
 
     public Product getProductById(Integer id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
     }
 
     public Product updateProduct(Integer id, Product product) {

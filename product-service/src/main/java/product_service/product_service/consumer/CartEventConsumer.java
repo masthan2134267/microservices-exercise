@@ -3,6 +3,8 @@ package product_service.product_service.consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+
+// ✅ IMPORTANT IMPORT
 import product_service.product_service.dto.CartEvent;
 
 @Component
@@ -15,6 +17,8 @@ public class CartEventConsumer {
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void consume(CartEvent event) {
+
         log.info("Received cart event: {}", event);
+
     }
 }

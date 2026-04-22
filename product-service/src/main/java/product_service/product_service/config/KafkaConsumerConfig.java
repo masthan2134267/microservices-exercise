@@ -8,6 +8,8 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+
+// ✅ IMPORTANT IMPORT
 import product_service.product_service.dto.CartEvent;
 
 import java.util.HashMap;
@@ -18,6 +20,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConsumerFactory<String, CartEvent> consumerFactory() {
+
         JsonDeserializer<CartEvent> deserializer = new JsonDeserializer<>(CartEvent.class);
         deserializer.addTrustedPackages("*");
         deserializer.setUseTypeHeaders(false);
@@ -34,9 +37,12 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, CartEvent> kafkaListenerContainerFactory() {
+
         ConcurrentKafkaListenerContainerFactory<String, CartEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
+
         factory.setConsumerFactory(consumerFactory());
+
         return factory;
     }
 }
