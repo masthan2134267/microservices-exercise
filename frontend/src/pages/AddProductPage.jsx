@@ -1,16 +1,30 @@
-import { useState } from "react";
-import { createProductApi } from "../services/productApi";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
+import { addProduct, clearProductMessage } from "../features/product/productSlice";
 
 function AddProductPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { loading, error, successMessage } = useSelector((state) => state.product);
+
   const [formData, setFormData] = useState({
     name: "",
     price: "",
     stock: ""
   });
 
-  const [message, setMessage] = useState("");
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (successMessage) {
+      const timer = setTimeout(() => {
+        dispatch(clearProductMessage());
+        navigate("/");
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, dispatch, navigate]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -20,25 +34,16 @@ function AddProductPage() {
     });
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
-    try {
-      await createProductApi({
+    dispatch(
+      addProduct({
         name: formData.name,
         price: Number(formData.price),
         stock: Number(formData.stock)
-      });
-
-      setMessage("Product added successfully!");
-
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
-    } catch (error) {
-      console.error("Error adding product:", error);
-      setMessage("Failed to add product");
-    }
+      })
+    );
   };
 
   return (
@@ -83,10 +88,13 @@ function AddProductPage() {
           />
         </div>
 
-        <button type="submit">Add Product</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Adding..." : "Add Product"}
+        </button>
       </form>
 
-      {message && <p style={{ marginTop: "15px" }}>{message}</p>}
+      {successMessage && <p style={{ marginTop: "15px", color: "green" }}>{successMessage}</p>}
+      {error && <p style={{ marginTop: "15px", color: "red" }}>{error}</p>}
     </div>
   );
 }
