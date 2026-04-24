@@ -7,13 +7,13 @@ import lombok.Data;
 @Data
 public class AddToCartRequest {
 
-    @NotNull
+    @NotNull(message = "Cart ID cannot be null")
     private Long cartId;
 
-    @NotNull
+    @NotNull(message = "Product ID cannot be null")
     private Long productId;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "Quantity cannot be null")
+    @Min(value = 1, message = "Quantity must be greater than 0")
     private Integer quantity;
 }

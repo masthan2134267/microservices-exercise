@@ -8,5 +8,6 @@ export const addToCartApi = async (cartData) => {
       "Content-Type": "application/json"
     }
   });
+
   return response.data;
 };

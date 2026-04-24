@@ -21,23 +21,34 @@ const ProductTable = ({ products, onAddToCart, cartLoading }) => {
         </thead>
         <tbody>
           {products && products.length > 0 ? (
-            products.map((product) => (
-              <tr key={product.id}>
-                <td style={tdStyle}>{product.id}</td>
-                <td style={tdStyle}>{product.name}</td>
-                <td style={tdStyle}>{product.price}</td>
-                <td style={tdStyle}>{product.stock}</td>
-                <td style={tdStyle}>
-                  <button
-                    onClick={() => onAddToCart(product.id)}
-                    disabled={cartLoading}
-                    style={{ padding: "6px 10px" }}
-                  >
-                    {cartLoading ? "Adding..." : "Add to Cart"}
-                  </button>
-                </td>
-              </tr>
-            ))
+            products.map((product) => {
+              const hasStock =
+                product.stock !== null &&
+                product.stock !== undefined &&
+                Number(product.stock) > 0;
+
+              return (
+                <tr key={product.id}>
+                  <td style={tdStyle}>{product.id}</td>
+                  <td style={tdStyle}>{product.name}</td>
+                  <td style={tdStyle}>{product.price}</td>
+                  <td style={tdStyle}>{hasStock ? product.stock : "No stock"}</td>
+                  <td style={tdStyle}>
+                    <button
+                      onClick={() => onAddToCart(product)}
+                      disabled={cartLoading || !hasStock}
+                      style={{ padding: "6px 10px" }}
+                    >
+                      {!hasStock
+                        ? "Out of Stock"
+                        : cartLoading
+                        ? "Adding..."
+                        : "Add to Cart"}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })
           ) : (
             <tr>
               <td style={tdStyle} colSpan="5">
