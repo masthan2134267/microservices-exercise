@@ -7,7 +7,11 @@ export const fetchProducts = createAsyncThunk(
     try {
       return await getAllProductsApi();
     } catch (error) {
-      return thunkAPI.rejectWithValue("Failed to fetch products");
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch products";
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -18,7 +22,23 @@ export const addProduct = createAsyncThunk(
     try {
       return await createProductApi(productData);
     } catch (error) {
-      return thunkAPI.rejectWithValue("Failed to add product");
+      const responseData = error.response?.data;
+
+      let message = "Failed to add product";
+
+      if (responseData?.message) {
+        message = responseData.message;
+      } else if (
+        responseData?.errors &&
+        typeof responseData.errors === "object" &&
+        Object.keys(responseData.errors).length > 0
+      ) {
+        message = Object.values(responseData.errors).join(", ");
+      } else if (error.message) {
+        message = error.message;
+      }
+
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -39,7 +59,6 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch products
       .addCase(fetchProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -50,10 +69,9 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || "Failed to fetch products";
       })
 
-      // Add product
       .addCase(addProduct.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -66,7 +84,7 @@ const productSlice = createSlice({
       })
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload || "Failed to add product";
       });
   }
 });

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { fetchProducts } from "../features/product/productSlice";
 import { addToCart, clearCartMessage } from "../features/cart/cartSlice";
 import ProductTable from "../components/ProductTable";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const ProductPage = () => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const ProductPage = () => {
     dispatch(
       addToCart({
         cartId: 1,
-        productId: productId,
+        productId,
         quantity: 1
       })
     );
@@ -62,7 +63,7 @@ const ProductPage = () => {
         </Link>
       </div>
 
-      {loading && <p>Loading products...</p>}
+      {loading && <LoadingSpinner text="Loading products..." />}
       {error && <p style={{ color: "red" }}>{error}</p>}
       {cartSuccessMessage && <p style={{ color: "green" }}>{cartSuccessMessage}</p>}
       {cartError && <p style={{ color: "red" }}>{cartError}</p>}

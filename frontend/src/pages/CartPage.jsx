@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartTable from "../components/CartTable";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const CartPage = () => {
   const { cartItems, loading, error } = useSelector((state) => state.cart);
@@ -23,9 +24,8 @@ const CartPage = () => {
         </button>
       </Link>
 
-      {loading && <p>Loading cart...</p>}
+      {loading && <LoadingSpinner text="Loading cart..." />}
       {error && <p style={{ color: "red" }}>{error}</p>}
-
       {!loading && <CartTable cartItems={cartItems} />}
     </div>
   );

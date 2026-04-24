@@ -9,7 +9,7 @@ export const addToCart = createAsyncThunk(
     } catch (error) {
       const responseData = error.response?.data;
 
-      let message = "Network Error";
+      let message = "Failed to add item to cart";
 
       if (responseData?.message) {
         message = responseData.message;
@@ -56,7 +56,7 @@ const cartSlice = createSlice({
       })
       .addCase(addToCart.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Network Error";
+        state.error = action.payload || "Failed to add item to cart";
       });
   }
 });
