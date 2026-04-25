@@ -11,8 +11,17 @@ const ProductPage = () => {
 
   const [searchText, setSearchText] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+  const [page, setPage] = useState(0);
+  const [size] = useState(5);
+  const [sortBy] = useState("id");
 
-  const { products, loading, error } = useSelector((state) => state.product);
+  const {
+    products,
+    loading,
+    error,
+    totalPages,
+    totalElements
+  } = useSelector((state) => state.product);
 
   const {
     successMessage: cartSuccessMessage,
@@ -21,8 +30,8 @@ const ProductPage = () => {
   } = useSelector((state) => state.cart);
 
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    dispatch(fetchProducts({ page, size, sortBy }));
+  }, [dispatch, page, size, sortBy]);
 
   useEffect(() => {
     if (cartSuccessMessage || cartError) {
@@ -69,6 +78,22 @@ const ProductPage = () => {
     setMaxPrice("");
   };
 
+  const goToPreviousPage = () => {
+    if (page > 0) {
+      setPage(page - 1);
+    }
+  };
+
+  const goToNextPage = () => {
+    if (page < totalPages - 1) {
+      setPage(page + 1);
+    }
+  };
+
+  const goToPage = (pageNumber) => {
+    setPage(pageNumber);
+  };
+
   return (
     <div
       style={{
@@ -78,7 +103,7 @@ const ProductPage = () => {
         fontFamily: "Arial, sans-serif"
       }}
     >
-      <h2 style={{ marginBottom: "15px" }}>Product List</h2>
+      <h2>Product List</h2>
 
       <div style={{ marginBottom: "15px" }}>
         <Link to="/add-product">
@@ -106,10 +131,7 @@ const ProductPage = () => {
           placeholder="Search by product name"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          style={{
-            padding: "8px",
-            width: "240px"
-          }}
+          style={{ padding: "8px", width: "240px" }}
         />
 
         <input
@@ -117,10 +139,7 @@ const ProductPage = () => {
           placeholder="Max price"
           value={maxPrice}
           onChange={(e) => setMaxPrice(e.target.value)}
-          style={{
-            padding: "8px",
-            width: "160px"
-          }}
+          style={{ padding: "8px", width: "160px" }}
         />
 
         <button onClick={handleClearFilters} style={{ padding: "8px 14px" }}>
@@ -141,8 +160,8 @@ const ProductPage = () => {
       {!loading && !error && (
         <>
           <p>
-            Showing <strong>{filteredProducts.length}</strong> of{" "}
-            <strong>{products.length}</strong> products
+            Showing <strong>{filteredProducts.length}</strong> products on this
+            page. Total products: <strong>{totalElements}</strong>
           </p>
 
           <ProductTable
@@ -150,6 +169,38 @@ const ProductPage = () => {
             onAddToCart={handleAddToCart}
             cartLoading={cartLoading}
           />
+
+          <div style={{ marginTop: "20px", display: "flex", gap: "8px" }}>
+            <button
+              onClick={goToPreviousPage}
+              disabled={page === 0}
+              style={{ padding: "8px 12px" }}
+            >
+              Prev
+            </button>
+
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => goToPage(index)}
+                style={{
+                  padding: "8px 12px",
+                  fontWeight: page === index ? "bold" : "normal",
+                  backgroundColor: page === index ? "#ddd" : "white"
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={goToNextPage}
+              disabled={page === totalPages - 1}
+              style={{ padding: "8px 12px" }}
+            >
+              Next
+            </button>
+          </div>
         </>
       )}
     </div>

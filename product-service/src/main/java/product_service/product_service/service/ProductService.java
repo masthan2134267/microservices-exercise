@@ -1,9 +1,9 @@
 package product_service.product_service.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import product_service.product_service.entity.Product;
-import product_service.product_service.exception.ProductNotFoundException;
 import product_service.product_service.repository.ProductRepository;
 
 import java.util.List;
@@ -14,34 +14,21 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public Product saveProduct(Product product) {
-        return productRepository.save(product);
-    }
-
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
     public Product getProductById(Integer id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
+                .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    public Product updateProduct(Integer id, Product product) {
-        Product existingProduct = getProductById(id);
-        existingProduct.setName(product.getName());
-        existingProduct.setPrice(product.getPrice());
-        existingProduct.setStock(product.getStock());
-        return productRepository.save(existingProduct);
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
     }
 
-    public void deleteProduct(Integer id) {
-        Product existingProduct = getProductById(id);
-        productRepository.delete(existingProduct);
-    }
-
-    public boolean hasStock(Integer productId, Integer quantity) {
-        Product product = getProductById(productId);
-        return product.getStock() >= quantity;
+    public Page<Product> getPaginatedProducts(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return productRepository.findAll(pageable);
     }
 }

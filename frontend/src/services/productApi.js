@@ -7,6 +7,13 @@ export const getAllProductsApi = async () => {
   return response.data;
 };
 
+export const getPaginatedProductsApi = async (page, size, sortBy) => {
+  const response = await axios.get(
+    `${BASE_URL}/paged?page=${page}&size=${size}&sortBy=${sortBy}`
+  );
+  return response.data;
+};
+
 export const createProductApi = async (productData) => {
   const response = await axios.post(BASE_URL, productData);
   return response.data;
