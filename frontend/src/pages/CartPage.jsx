@@ -12,12 +12,13 @@ const CartPage = () => {
         maxWidth: "1000px",
         margin: "20px auto",
         padding: "20px",
-        fontFamily: "Arial, sans-serif"
+        fontFamily: "Arial"
       }}
     >
       <h2 style={{ marginBottom: "15px" }}>Cart Page</h2>
 
-      <Link to="/">
+      {/* ✅ FIXED ROUTE */}
+      <Link to="/products">
         <button style={{ marginBottom: "15px", padding: "8px 14px" }}>
           Back to Product List
         </button>

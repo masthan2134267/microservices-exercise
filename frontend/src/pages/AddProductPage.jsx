@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
-import { addProduct, clearProductMessage } from "../features/product/productSlice";
+import {
+  addProduct,
+  clearProductMessage
+} from "../features/product/productSlice";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 function AddProductPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { loading, error, successMessage } = useSelector((state) => state.product);
+  const { loading, error, successMessage } = useSelector(
+    (state) => state.product
+  );
 
   const [formData, setFormData] = useState({
     name: "",
@@ -16,11 +21,12 @@ function AddProductPage() {
     stock: ""
   });
 
+  // ✅ AFTER ADD → REDIRECT TO /products
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
         dispatch(clearProductMessage());
-        navigate("/");
+        navigate("/products"); // ✅ FIXED
       }, 1200);
 
       return () => clearTimeout(timer);
@@ -29,6 +35,7 @@ function AddProductPage() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+
     setFormData({
       ...formData,
       [name]: value
@@ -53,12 +60,13 @@ function AddProductPage() {
         maxWidth: "600px",
         margin: "20px auto",
         padding: "20px",
-        fontFamily: "Arial, sans-serif"
+        fontFamily: "Arial"
       }}
     >
       <h1>Add Product</h1>
 
-      <Link to="/">
+      {/* ✅ FIXED ROUTE */}
+      <Link to="/products">
         <button style={{ marginBottom: "15px", padding: "8px 14px" }}>
           Back to Product List
         </button>
@@ -107,8 +115,18 @@ function AddProductPage() {
       </form>
 
       {loading && <LoadingSpinner text="Adding product..." />}
-      {successMessage && <p style={{ marginTop: "15px", color: "green" }}>{successMessage}</p>}
-      {error && <p style={{ marginTop: "15px", color: "red" }}>{error}</p>}
+
+      {successMessage && (
+        <p style={{ marginTop: "15px", color: "green" }}>
+          {successMessage}
+        </p>
+      )}
+
+      {error && (
+        <p style={{ marginTop: "15px", color: "red" }}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }

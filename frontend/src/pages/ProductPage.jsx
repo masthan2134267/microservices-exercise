@@ -29,10 +29,12 @@ const ProductPage = () => {
     loading: cartLoading
   } = useSelector((state) => state.cart);
 
+  // 🔹 Fetch products (pagination)
   useEffect(() => {
     dispatch(fetchProducts({ page, size, sortBy }));
   }, [dispatch, page, size, sortBy]);
 
+  // 🔹 Clear cart messages after 2.5 sec
   useEffect(() => {
     if (cartSuccessMessage || cartError) {
       const timer = setTimeout(() => {
@@ -43,6 +45,7 @@ const ProductPage = () => {
     }
   }, [cartSuccessMessage, cartError, dispatch]);
 
+  // 🔹 Filtering (search + max price)
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
       const productName = product.name || "";
@@ -58,9 +61,10 @@ const ProductPage = () => {
     });
   }, [products, searchText, maxPrice]);
 
+  // 🔹 Add to cart
   const handleAddToCart = (product) => {
     if (!product.stock || Number(product.stock) <= 0) {
-      alert("This product has no stock. Cannot add to cart.");
+      alert("No stock available");
       return;
     }
 
@@ -73,21 +77,19 @@ const ProductPage = () => {
     );
   };
 
+  // 🔹 Clear filters
   const handleClearFilters = () => {
     setSearchText("");
     setMaxPrice("");
   };
 
+  // 🔹 Pagination
   const goToPreviousPage = () => {
-    if (page > 0) {
-      setPage(page - 1);
-    }
+    if (page > 0) setPage(page - 1);
   };
 
   const goToNextPage = () => {
-    if (page < totalPages - 1) {
-      setPage(page + 1);
-    }
+    if (page < totalPages - 1) setPage(page + 1);
   };
 
   const goToPage = (pageNumber) => {
@@ -100,11 +102,12 @@ const ProductPage = () => {
         maxWidth: "1100px",
         margin: "20px auto",
         padding: "20px",
-        fontFamily: "Arial, sans-serif"
+        fontFamily: "Arial"
       }}
     >
       <h2>Product List</h2>
 
+      {/* 🔹 Navigation Buttons (2H Routing) */}
       <div style={{ marginBottom: "15px" }}>
         <Link to="/add-product">
           <button style={{ marginRight: "10px", padding: "8px 14px" }}>
@@ -113,17 +116,18 @@ const ProductPage = () => {
         </Link>
 
         <Link to="/cart">
-          <button style={{ padding: "8px 14px" }}>View Cart</button>
+          <button style={{ padding: "8px 14px" }}>
+            View Cart
+          </button>
         </Link>
       </div>
 
+      {/* 🔹 Filters */}
       <div
         style={{
           display: "flex",
-          gap: "12px",
-          alignItems: "center",
-          marginBottom: "15px",
-          flexWrap: "wrap"
+          gap: "10px",
+          marginBottom: "15px"
         }}
       >
         <input
@@ -142,26 +146,29 @@ const ProductPage = () => {
           style={{ padding: "8px", width: "160px" }}
         />
 
-        <button onClick={handleClearFilters} style={{ padding: "8px 14px" }}>
+        <button onClick={handleClearFilters}>
           Clear Filters
         </button>
       </div>
 
+      {/* 🔹 Loading */}
       {loading && <LoadingSpinner text="Loading products..." />}
 
+      {/* 🔹 Errors */}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
+      {/* 🔹 Cart Messages */}
       {cartSuccessMessage && (
         <p style={{ color: "green" }}>{cartSuccessMessage}</p>
       )}
-
       {cartError && <p style={{ color: "red" }}>{cartError}</p>}
 
+      {/* 🔹 Table */}
       {!loading && !error && (
         <>
           <p>
-            Showing <strong>{filteredProducts.length}</strong> products on this
-            page. Total products: <strong>{totalElements}</strong>
+            Showing <strong>{filteredProducts.length}</strong> products.
+            Total products: <strong>{totalElements}</strong>
           </p>
 
           <ProductTable
@@ -170,12 +177,9 @@ const ProductPage = () => {
             cartLoading={cartLoading}
           />
 
-          <div style={{ marginTop: "20px", display: "flex", gap: "8px" }}>
-            <button
-              onClick={goToPreviousPage}
-              disabled={page === 0}
-              style={{ padding: "8px 12px" }}
-            >
+          {/* 🔹 Pagination */}
+          <div style={{ marginTop: "20px" }}>
+            <button onClick={goToPreviousPage} disabled={page === 0}>
               Prev
             </button>
 
@@ -184,9 +188,8 @@ const ProductPage = () => {
                 key={index}
                 onClick={() => goToPage(index)}
                 style={{
-                  padding: "8px 12px",
-                  fontWeight: page === index ? "bold" : "normal",
-                  backgroundColor: page === index ? "#ddd" : "white"
+                  margin: "0 5px",
+                  fontWeight: page === index ? "bold" : "normal"
                 }}
               >
                 {index + 1}
@@ -196,7 +199,6 @@ const ProductPage = () => {
             <button
               onClick={goToNextPage}
               disabled={page === totalPages - 1}
-              style={{ padding: "8px 12px" }}
             >
               Next
             </button>
